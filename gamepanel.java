@@ -11,57 +11,72 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class gamepanel extends JPanel implements KeyListener, ActionListener{
+    // arrays for snake length
     private int[] snakexlength = new int[750];
     private int[] snakeylength = new int[750];
+
+    // direction
     private boolean left= false;
     private boolean down= false;
     private boolean up = false;
     private boolean right = false;
 
+    // length of snake and moves
     private int lenghtofsnake = 3;
     private int moves =0;
 
+    // snake heads
     private ImageIcon rightmouth;
     private ImageIcon upmouth;
     private ImageIcon leftmouth;
     private ImageIcon downmouth;
 
+    // timer to show that snake is moving
     private Timer timer;
     private int delay = 100;
 
+    // snake-body and title image of the game
     private ImageIcon snakeTitle;
     private ImageIcon snakeimage;
 
+    // score 
     private int score =0;
 
-    //  for enemy
-    
 
+    //  array for random position of enemy
     private int[] enemyxpos = {25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850};
     private int[] enemyypos = {75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625};
+    // enemy image
     private ImageIcon enemyimage;
+
+    // Random enemy
     private Random random = new Random();
     private int xpos = random.nextInt(34);
     private int ypos = random.nextInt(23);
     
+
     public gamepanel(){
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        // timer to show that snake is moving
         timer = new Timer(delay, this);
         timer.start();
     }
 
     public void paint(Graphics g){
+        // default snake position 
         if(moves ==0){
+
             snakexlength[0]=100;
             snakexlength[1]=75;
             snakexlength[2]=50;
+
             snakeylength[0]=100;
             snakeylength[1]=100;
             snakeylength[2]=100;
-
         }
+
         // draw title image border
         g.setColor(Color.gray);
         g.drawRect(24, 10, 851, 55);
@@ -78,19 +93,21 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
         g.setColor(Color.black);
         g.fillRect(25, 75, 850, 575);
 
-        // draw the score
+        // draw the score on the title image
         g.setColor(Color.white);
         g.setFont(new Font("arial",Font.PLAIN,14));
         g.drawString("Scores: "+score, 780,30);
 
-        // draw length
+        // draw length on thr title image
         g.setColor(Color.white);
         g.setFont(new Font("arial",Font.PLAIN,14));
         g.drawString("Length: "+lenghtofsnake, 780,50);
 
+        // make initial postion of the snake as the right position
         rightmouth = new ImageIcon("rightmouth.png");
         rightmouth.paintIcon(this, g, snakexlength[0], snakeylength[0]);
 
+        // loop for changing the head and the body according to the movement 
         for(int i=0;i<lenghtofsnake;i++){
             if(i==0 && right){
                 rightmouth = new ImageIcon("rightmouth.png");
@@ -108,7 +125,7 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
                 upmouth = new ImageIcon("upmouth.png");
                 upmouth.paintIcon(this, g, snakexlength[i], snakeylength[i]);
             }
-
+            // this condition make body of snake
             if(i!=0){
                 snakeimage = new ImageIcon("snakeimage.png");
                 snakeimage.paintIcon(this, g, snakexlength[i], snakeylength[i]);
@@ -116,7 +133,7 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
         }
 
         enemyimage = new ImageIcon("enemy.png");
-
+        // condition for if snake eat enemy then score and length of snake will increase and change the random position of enemy
         if((enemyxpos[xpos]==snakexlength[0]) && (enemyypos[ypos]==snakeylength[0])){
             score++;
             lenghtofsnake++;
@@ -125,6 +142,7 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
         }
         enemyimage.paintIcon(this, g, enemyxpos[xpos], enemyypos[ypos]);
 
+        // loop to check if snake bite itself then show gameover and start
         for(int i=1;i<lenghtofsnake;i++){
             if(snakexlength[i]==snakexlength[0] && snakeylength[i]==snakeylength[0]){
                 right = false;
@@ -146,6 +164,7 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         timer.start();
+
         if(right){
             for(int i=lenghtofsnake-1;i>=0;i--){
                 snakeylength[i+1]=snakeylength[i];
@@ -224,6 +243,7 @@ public class gamepanel extends JPanel implements KeyListener, ActionListener{
     @Override
     public void keyPressed(KeyEvent e) {
         // TODO Auto-generated method stub
+        // condition to check key pressing
         if(e.getKeyCode()==KeyEvent.VK_SPACE){
             moves=0;
             score=0;
